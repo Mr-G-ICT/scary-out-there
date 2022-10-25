@@ -9,10 +9,10 @@ namespace Spooky
     {
         public static int ghosts;
         public static int ghouls;
-        public static int witches = 0;
-        public static int vampires = 0;
-        public static int zombies = 0;
-        public static int trolls = 0;
+        public static int witches;
+        public static int vampires;
+        public static int zombies;
+        public static int trolls;
 
         static void Main(string[] args)
         {
@@ -38,6 +38,7 @@ namespace Spooky
                     for (int x = 0; x < words.Length; x++)
                     {
                         string word = words[x].ToLower();
+                        //sort out the XML File
                         if (word.Contains("amount"))
                         {
                             word = word.Replace("amount", "");
@@ -54,7 +55,7 @@ namespace Spooky
                         }
                         else if (word.Any(char.IsDigit))
                         {
-
+                            //sort out the txt files
                             word = word.Trim('"').TrimEnd('"', ',');
                             amount = int.Parse(word);
                             if (x + 1 < words.Length)
@@ -71,10 +72,12 @@ namespace Spooky
                         }
                        else if (validwords.Any(word.Contains))
                        {
+                            //this sorts out single mentions of witch etc.
                            Console.WriteLine(word);
                            monster = word;
                            amount = 1;
                            addToMonster(1, monster);
+                           
                         }
 
                     }
