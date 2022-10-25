@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Spooky
 {
-
     internal class Program
     {
         public static int ghosts;
@@ -31,53 +30,54 @@ namespace Spooky
                 monster = "";
 
 
-                for (int i = 0; i < allLines.Length; i++)
+                for (int lineCount = 0; lineCount < allLines.Length; lineCount++)
                 {
-                    string[] words = allLines[i].Split(' ');
+                    string[] words = allLines[lineCount].Split(' ');
 
-                    for (int x = 0; x < words.Length; x++)
+                    for (int wordCount = 0; wordCount < words.Length; wordCount++)
                     {
-                        string word = words[x].ToLower();
+                        string word = words[wordCount].ToLower();
                         //sort out the XML File
                         if (word.Contains("amount"))
                         {
-                            word = word.Replace("amount", "");
-                            word = word.Replace("<>", "");
-                            word = word.Replace("</>", ""); ;
+                            //had to do it this way as it didn't like the diamonds around amount
+                            word = word.Replace("amount", "").Replace("<>", "").Replace("</>", "");
                             amount = int.Parse(word);
-                            Console.WriteLine("FOUND" + amount);
-                            Console.WriteLine("monster" + monster);
                             addToMonster(amount - 1, monster);
 
-                            Console.WriteLine("reset Monster");
                             monster = "";
-                            i = i + 1;
+                            lineCount = lineCount + 1;
                         }
                         else if (word.Any(char.IsDigit))
                         {
                             //sort out the txt files
                             word = word.Trim('"').TrimEnd('"', ',');
                             amount = int.Parse(word);
-                            if (x + 1 < words.Length)
-                            {
-                                monster = words[x + 1].ToLower();
-                            }
-                            else
-                            {
+                            if (wordCount + 1 < words.Length)
+                                monster = words[wordCount + 1].ToLower();
+                            else 
                                 monster = "";
-                            }
                             addToMonster(amount - 1, monster);
-                            Console.WriteLine(word + "Added" + monster + "to monster");
-
+                        }
+                        else if(word.Contains("[")){
+                            int count = 0;
+                            //this is looking for the mention of json
+                            while (!word.Contains("]"))
+                            {
+                               
+                                lineCount++;
+                                word = allLines[lineCount];
+                                if (word.Contains('}'))
+                                    count++;
+                            }
+                            addToMonster(count - 1, monster);
                         }
                        else if (validwords.Any(word.Contains))
                        {
                             //this sorts out single mentions of witch etc.
-                           Console.WriteLine(word);
                            monster = word;
                            amount = 1;
                            addToMonster(1, monster);
-                           
                         }
 
                     }
@@ -102,7 +102,7 @@ namespace Spooky
             }
             else if (monster.Contains("ghouls") || monster.Contains("ghoul"))
             {
-                ghouls = ghouls + amount; ;
+                ghouls = ghouls + amount;
             }
             else if (monster.Contains("vampires") || monster.Contains("vampire"))
             {
